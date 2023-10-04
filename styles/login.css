@@ -1,0 +1,196 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.wrapper {
+    width: 100%;
+    overflow: auto;
+    /* add image */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%), url("../images/security2.jpg");
+    background-color: #cccccc;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+.login_logo img{
+    height: 70px;
+    width: 70px;
+}
+.left_section_content {
+    margin: 5%;
+    padding: 10%;
+    border-radius: 5%;
+    height: 450px;
+    background-color: rgba(247, 243, 243, 0.2);
+    color: white;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    text-align: justify;
+}
+
+.left_section_content p {
+    text-align: justify;
+}
+
+.left_section {
+    float: left;
+    width: 60%;
+    /* background-color: blue; */
+}
+
+.joinus {
+    text-decoration: none;
+    color: white;
+    background-color: #184B81;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 5px;
+}
+
+.joinus:hover {
+    color: #184B81;
+    background-color: #D1D5DE;
+    transition: color 0.8s ease-out;
+    transition: background-color 0.8s ease-out;
+}
+
+.joinus_mobile {
+    display: none
+}
+
+.right_section {
+    float: right;
+    width: 40%;
+    /* background-color: red; */
+}
+.header_mobile{
+    display:none
+}
+.form_wrapper {
+    /* background-color: red; */
+    margin: 5%;
+    margin-left: 0%;
+    margin-top: 8%;
+    padding: 10%;
+    border-radius: 5%;
+    height: 400px;
+    /* background-color: rgba(247, 243, 243, 0.2   ); */
+    color: white;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.form_wrapper label {
+    font-size: 30px;
+}
+
+.form_wrapper input {
+    width: 90%;
+    height: 20px;
+    /* border: 1px solid white; */
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0px;
+}
+
+.form_wrapper input:hover {
+    border: 2px solid #184B81;
+}
+
+.form_wrapper .login-button {
+    font-size: 20px;
+    margin: 10px 0px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 8px 5px;
+    width: 30%;
+    background-color: #D1D5DE;
+    border-radius: 5px;
+}
+
+.form_wrapper .login-button:hover {
+    background-color: #184B81;
+    color: #D1D5DE;
+    transition: background-color 0.5s ease-out;
+}
+
+.form_wrapper .forgot-password {
+    float: right;
+    font-size: 20px;
+    margin: 17px 15px;
+    text-decoration: none;
+    color: white;
+}
+
+.form_wrapper .forgot-password:hover {
+    color: #f44336;
+    transition: color 0.5s ease-out;
+}
+
+.contact_mainlink {
+    text-decoration: none;
+    color: white;
+}
+
+.contact_mainlink:hover,
+/* .contact_us:hover {
+    color: #184B81;
+    background-color: #D1D5DE;
+    transition: color 0.5s ease-out;
+    transition: background-color 0.5s ease-out;
+} */
+
+.contact_us {
+    margin-top: 20px;
+    background-color: #184B81;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.cleardiv {
+    clear: both;
+}
+
+.error-message {
+    background-color: #ff9999;
+    color: #cc0000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+
+/* CSS for mobile version */
+@media (max-width: 1024px) {
+    .left_section {
+        width: 0%;
+        display: none;
+    }
+
+    .right_section {
+        width: 100%;
+    }
+    .header_mobile{
+        display: block;
+    }
+    .joinus_mobile {
+        display: block;
+        text-decoration: none;
+        color: white;
+        background-color: #184B81;
+        padding: 10px;
+        font-size: 20px;
+        border-radius: 5px;
+    }
+    .joinus_mobile:hover {
+        color: #184B81;
+        background-color: rgb(247, 241, 241);
+        transition: color 0.8s ease-out;
+        transition: background-color 0.8s ease-out;
+    }
+    .form_wrapper label{
+        font-size: 25px;
+    }
+}
