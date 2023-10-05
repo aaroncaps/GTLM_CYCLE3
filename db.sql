@@ -6,7 +6,7 @@ CREATE DATABASE GTLM;
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 04, 2023 at 02:14 PM
+-- Generation Time: Oct 05, 2023 at 05:20 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -53,7 +53,15 @@ INSERT INTO `Event_Logs` (`eventId`, `action`, `userId`, `timestamp`) VALUES
 (20009, 'Task declined by supervisor', 30004, '2023-10-04 11:59:15'),
 (20010, 'Task reviewed by supervisor', 30004, '2023-10-04 12:05:17'),
 (20011, 'Task assigned by supervisor', 30004, '2023-10-04 12:05:34'),
-(20012, 'Report updated by supervisor', 30004, '2023-10-04 12:06:38');
+(20012, 'Report updated by supervisor', 30004, '2023-10-04 12:06:38'),
+(20013, 'Logged in', 30004, '2023-10-04 12:22:27'),
+(20014, 'Logged in', 30004, '2023-10-05 00:43:41'),
+(20015, 'Task reviewed by supervisor', 30004, '2023-10-05 00:45:29'),
+(20016, 'Task assigned by supervisor', 30004, '2023-10-05 00:47:07'),
+(20017, 'Report updated by supervisor', 30004, '2023-10-05 00:51:24'),
+(20018, 'Logged in', 30004, '2023-10-05 02:10:05'),
+(20019, 'Task reviewed by supervisor', 30004, '2023-10-05 02:14:08'),
+(20020, 'Task assigned by supervisor', 30004, '2023-10-05 02:14:19');
 
 -- --------------------------------------------------------
 
@@ -67,6 +75,7 @@ CREATE TABLE `New_Hires` (
   `dateRequest` date NOT NULL,
   `fName` varchar(50) NOT NULL,
   `lName` varchar(50) NOT NULL,
+  `description` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -74,8 +83,8 @@ CREATE TABLE `New_Hires` (
 -- Dumping data for table `New_Hires`
 --
 
-INSERT INTO `New_Hires` (`requestId`, `statusId`, `dateRequest`, `fName`, `lName`, `timestamp`) VALUES
-(10001, 'ADM01', '2023-09-26', 'Aaron', 'Caparas', '2023-09-25 23:28:44');
+INSERT INTO `New_Hires` (`requestId`, `statusId`, `dateRequest`, `fName`, `lName`, `description`, `timestamp`) VALUES
+(10001, 'ADM01', '2023-09-26', 'Aaron', 'Caparas', 'This will be a new hire with a role of Security Officer', '2023-09-25 23:28:44');
 
 -- --------------------------------------------------------
 
@@ -104,7 +113,12 @@ CREATE TABLE `Report` (
 
 INSERT INTO `Report` (`taskId`, `userId`, `reportSO`, `attachmentSO`, `statusSO`, `timestampSO`, `reportSup`, `statusSup`, `timestampSup`, `reportDis`, `statusDis`, `timestampDis`) VALUES
 (50002, 30005, NULL, NULL, 'Completed', '2023-10-04 11:06:04', 'Ok report', 'Submitted', '2023-10-04 12:06:38', NULL, 'Pending', NULL),
-(50002, 30006, NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL);
+(50002, 30006, 'ive completed it', NULL, 'Completed', '2023-10-04 23:49:43', 'ive competed', 'Submitted', '2023-10-05 00:51:24', NULL, 'Pending', NULL),
+(50003, 30008, NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL),
+(50004, 30005, NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL),
+(50004, 30006, NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL),
+(50004, 30007, NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL, NULL, 'Pending', NULL),
+(50004, 30008, 'ive compelted to report', NULL, 'Submitted', '2023-10-05 01:14:44', NULL, 'Pending', NULL, NULL, 'Pending', NULL);
 
 -- --------------------------------------------------------
 
@@ -170,13 +184,14 @@ INSERT INTO `System_Settings` (`sysSettingId`, `loginMsg1`, `loginMsg2`, `loginM
 CREATE TABLE `Task` (
   `taskId` int(5) NOT NULL,
   `taskName` varchar(50) NOT NULL,
-  `taskDetailsDis` text NOT NULL,
+  `taskDetailsCli` text NOT NULL,
+  `taskDetailsDis` text DEFAULT NULL,
   `taskDetailsSup` text DEFAULT NULL,
   `dateCreated` date NOT NULL,
   `dateFrom` date NOT NULL,
   `dateTo` date NOT NULL,
   `statusDis` char(5) NOT NULL,
-  `statusSup` char(5) NOT NULL,
+  `statusSup` char(5) DEFAULT NULL,
   `dispatcherId` int(5) DEFAULT NULL,
   `supervisorId` int(5) DEFAULT NULL,
   `scheduleId` int(5) DEFAULT NULL,
@@ -188,11 +203,11 @@ CREATE TABLE `Task` (
 -- Dumping data for table `Task`
 --
 
-INSERT INTO `Task` (`taskId`, `taskName`, `taskDetailsDis`, `taskDetailsSup`, `dateCreated`, `dateFrom`, `dateTo`, `statusDis`, `statusSup`, `dispatcherId`, `supervisorId`, `scheduleId`, `declineReason`, `timestamp`) VALUES
-(50001, 'Secure perimeter fencing around BFH area', 'We need to make sure that site A and B of BFH are secured with 2 or more SO. Assing 20 SO to this task. \r\n\r\nBe on alert for any possible disturbances, especially in site A.', NULL, '2023-09-26', '2023-09-26', '2023-09-26', 'DIS04', 'SUP01', 30003, 30004, NULL, NULL, '2023-10-04 12:04:13'),
-(50002, 'Help site ABC', 'Please secure all exits blah blah blah', '', '2023-09-30', '2023-10-01', '2023-10-03', 'DIS04', 'SUP03', 30003, 30004, 40001, NULL, '2023-10-04 12:05:34'),
-(50003, 'Protect and Serve', 'Go to work and to your thing', NULL, '2023-09-30', '2023-10-01', '2023-10-02', 'DIS04', 'SUP01', 30003, 30004, NULL, NULL, '2023-10-04 12:04:47'),
-(50004, 'Run for your life', 'Don\'t run, just walk', NULL, '2023-09-27', '2023-09-28', '2023-09-30', 'DIS04', 'SUP01', 30003, 30004, NULL, NULL, '2023-10-04 12:05:02');
+INSERT INTO `Task` (`taskId`, `taskName`, `taskDetailsCli`, `taskDetailsDis`, `taskDetailsSup`, `dateCreated`, `dateFrom`, `dateTo`, `statusDis`, `statusSup`, `dispatcherId`, `supervisorId`, `scheduleId`, `declineReason`, `timestamp`) VALUES
+(50001, 'Secure perimeter fencing around BFH area', 'We need to make sure that site A and B of BFH are secured with 2 or more SO. Assing 20 SO to this task. \r\n\r\nBe on alert for any possible disturbances, especially in site A.', 'We need to make sure that site A and B of BFH are secured with 2 or more SO. Assing 20 SO to this task. \r\n\r\nBe on alert for any possible disturbances, especially in site A.', NULL, '2023-09-26', '2023-09-26', '2023-09-26', 'DIS01', NULL, 30003, NULL, NULL, NULL, '2023-10-05 03:13:02'),
+(50002, 'Help site ABC', 'Please secure all exits blah blah blah', 'Please secure all exits blah blah blah', '', '2023-09-30', '2023-10-01', '2023-10-03', 'DIS04', 'SUP04', 30003, 30004, 40001, NULL, '2023-10-05 03:13:15'),
+(50003, 'Protect and Serve', 'Go to work and to your thing', 'Go to work and to your thing', 'sdsdaaadad', '2023-09-30', '2023-10-01', '2023-10-02', 'DIS04', 'SUP03', 30003, 30004, 40002, NULL, '2023-10-05 03:16:21'),
+(50004, 'Run for your life', 'Don\'t run, just walk', 'Don\'t run, just walk', 'asdfsdafds', '2023-09-27', '2023-09-28', '2023-09-30', 'DIS04', 'SUP03', 30003, 30004, 40003, NULL, '2023-10-05 03:16:30');
 
 -- --------------------------------------------------------
 
@@ -244,7 +259,12 @@ CREATE TABLE `User_Schedule` (
 
 INSERT INTO `User_Schedule` (`scheduleId`, `userId`, `dateFrom`, `dateTo`, `timestamp`) VALUES
 (40001, 30005, '2023-10-01', '2023-10-03', '2023-10-04 12:05:34'),
-(40001, 30006, '2023-10-01', '2023-10-03', '2023-10-04 12:05:34');
+(40001, 30006, '2023-10-01', '2023-10-03', '2023-10-04 12:05:34'),
+(40002, 30008, '2023-10-01', '2023-10-02', '2023-10-05 00:47:07'),
+(40003, 30005, '2023-09-28', '2023-09-30', '2023-10-05 02:14:19'),
+(40003, 30006, '2023-09-28', '2023-09-30', '2023-10-05 02:14:19'),
+(40003, 30007, '2023-09-28', '2023-09-30', '2023-10-05 02:14:19'),
+(40003, 30008, '2023-09-28', '2023-09-30', '2023-10-05 02:14:19');
 
 --
 -- Indexes for dumped tables
@@ -306,12 +326,13 @@ ALTER TABLE `User_Schedule`
 -- AUTO_INCREMENT for table `Event_Logs`
 --
 ALTER TABLE `Event_Logs`
-  MODIFY `eventId` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20013;
+  MODIFY `eventId` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20021;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
 
 
 USE GTLM;
