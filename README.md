@@ -13,5 +13,6 @@ Security Officer: so
 
 ==
 
-1. Added column for description for admin
-2. Need to change insertion of Report, should be done by the Dispatcher instead of Supervisor
+1. Added column for description for admin OK
+2. Need to change insertion of Report, should also be done by the Dispatcher as well for the Supervisor
+3. Figure out what to do with Report where Supervisor has assinged to more than one.

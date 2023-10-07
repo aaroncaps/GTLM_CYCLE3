@@ -80,21 +80,20 @@
                         echo '<div class="success-message">' . htmlspecialchars($message) . '</div>';
                     } 
                 ?>
-                <div class="filterstatus">
-                    <label for="filterdropdown">Filter by status:</label>
-                    <select id="filterdropdown" name="Status">
-                    <option value="All">All</option>
-                    <option value="Submitted">Submitted</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                    </select>
+                <div>
+                    <label>
+                        <input type="radio" name="reportType" value="MyReports" onchange="radioReports()" checked> My Reports
+                    </label>
+                    <label class="so-label">
+                        <input type="radio" name="reportType" value="SOReports" onchange="radioReports()"> Security Officers's Reports
+                    </label>
                 </div>
                 <form>
                     <div>
                         <table id="tasktable">
                             <thead>
                                 <tr>
-                                    <th>Security Officer's ID</th>
+                                    <th>Supervisor's ID</th>
                                     <th>Name</th>
                                     <th>Task</th>
                                     <th>Status</th>
@@ -104,9 +103,90 @@
                             <tbody id="reportsTableBody">
                                 <?php
                                     require_once "../inc/dbconn.inc.php";
-                                    $sql = "SELECT R.taskId, R.userId, R.timestampSO, T.taskName, U.fName, U.lName, R.statusSO
+                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    WHERE T.statusSup IN ('SUP03','SUP04') AND T.supervisorId = $loginUserId;
+                                    WHERE T.statusDis IN ('DIS04','DIS05') AND T.supervisorId = $loginUserId AND R.userId = $loginUserId;
+                                    ";
+                                    $reports = [];
+
+                                    if ($result = mysqli_query($conn, $sql)) {
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $reports[] = $row;
+                                            }
+                                            mysqli_free_result($result);
+                                        }
+                                    }
+                                    foreach ($reports as $report) :
+                                        //Check if every task report of a particular taskId has been completed
+                                        $allCompleted = 0;
+                                        $sql = "SELECT taskId, 
+                                        CASE WHEN COUNT(*) = SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) 
+                                            THEN 1 
+                                            ELSE 0 
+                                        END AS all_completed
+                                        FROM Report
+                                        WHERE taskId = ? AND userId != $loginUserId
+                                        GROUP BY taskId";
+                                        $statement = mysqli_prepare($conn, $sql);
+                                        if ($statement) {
+                                            mysqli_stmt_bind_param($statement, 's', $report['taskId']);
+                                            mysqli_stmt_execute($statement);
+                                            $result = mysqli_stmt_get_result($statement);
+                                            $row = mysqli_fetch_assoc($result);
+
+                                        if ($row) {
+                                            $allCompleted = $row['all_completed'];
+                                        }
+                                        mysqli_stmt_close($statement);
+                                        } else {
+                                        echo "Error in SQL statement: " . mysqli_error($conn);
+                                        }
+                                        if($allCompleted) {
+                                ?>
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:void(0);" onclick="redirectToReportsSoSupPage('<?php echo $report['taskId']; ?>',
+                                                '<?php echo $report['taskName']; ?>', '<?php echo $report['status']; ?>')">
+                                                <?php echo $report['userId']; ?>
+                                            </a>
+                                        </td>
+                                        <td><?php echo $report['fName'] . ' ' . $report['lName']; ?></td>
+                                        <td><?php echo $report['taskName']; ?></td>
+                                        <td><?php echo $report['status']; ?></td>
+                                        <td>
+                                        <?php
+                                        if (!empty($report['timestamp'])) {
+                                            $formattedTimestampSO = date('d-m-Y H:i:s', strtotime($report['timestamp']));
+                                            echo htmlspecialchars($formattedTimestampSO);
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                        </td>
+                                    </tr>
+                                <?php }
+                                endforeach;
+                                ?>
+                                
+                            </tbody>
+                        </table>
+                        <table id="tasktable2">
+                            <thead>
+                                <tr>
+                                    <th>Security Officer's ID</th>
+                                    <th>Name</th>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th>Date Submitted</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody2">
+                                <?php
+                                    require_once "../inc/dbconn.inc.php";
+                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
+                                    FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
+                                    WHERE T.statusSup IN ('SUP03','SUP04') AND T.supervisorId = $loginUserId AND R.userId != $loginUserId;
                                     ";
                                     $reports = [];
 
@@ -123,17 +203,17 @@
                                     <tr>
                                         <td>
                                             <a href="javascript:void(0);" onclick="redirectToReportsSoPage('<?php echo $report['taskId']; ?>',
-                                                '<?php echo $report['taskName']; ?>', '<?php echo $report['userId']; ?>', '<?php echo $report['fName']; ?>', '<?php echo $report['lName']; ?>', '<?php echo $report['timestampSO']; ?>')">
+                                                '<?php echo $report['taskName']; ?>', '<?php echo $report['userId']; ?>', '<?php echo $report['fName']; ?>', '<?php echo $report['lName']; ?>', '<?php echo $report['timestamp']; ?>')">
                                                 <?php echo $report['userId']; ?>
                                             </a>
                                         </td>
                                         <td><?php echo $report['fName'] . ' ' . $report['lName']; ?></td>
                                         <td><?php echo $report['taskName']; ?></td>
-                                        <td><?php echo $report['statusSO']; ?></td>
+                                        <td><?php echo $report['status']; ?></td>
                                         <td>
                                         <?php
-                                        if (!empty($report['timestampSO'])) {
-                                            $formattedTimestampSO = date('d-m-Y H:i:s', strtotime($report['timestampSO']));
+                                        if (!empty($report['timestamp'])) {
+                                            $formattedTimestampSO = date('d-m-Y H:i:s', strtotime($report['timestamp']));
                                             echo htmlspecialchars($formattedTimestampSO);
                                         } else {
                                             echo '-';

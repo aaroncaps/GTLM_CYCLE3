@@ -108,7 +108,7 @@ if (isset($_POST["option"])) {
         }
 
         // Insert into the table Report
-        $sql = "INSERT INTO Report (taskId, userId, statusSO, statusSup, statusDis) VALUES (?, ?, 'Pending', 'Pending', 'Pending')";
+        $sql = "INSERT INTO Report (taskId, userId, status) VALUES (?, ?, 'Pending')";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             $userIds = explode(',', $_POST["user-ids-input"]);
@@ -210,7 +210,7 @@ if (isset($_POST["option"])) {
             }
 
             //Insert into the table Report
-            $sql = "INSERT INTO Report (taskId, userId, statusSO, statusSup, statusDis) VALUES (?, ?, 'Pending', 'Pending', 'Pending')";
+            $sql = "INSERT INTO Report (taskId, userId, status) VALUES (?, ?, 'Pending')";
             $statement = mysqli_prepare($conn, $sql);
             if ($statement) {
                 $userIds = explode(',', $_POST["user-ids-input"]);

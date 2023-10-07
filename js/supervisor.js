@@ -1,53 +1,54 @@
 //Kanban
-let windowHeight = window.innerHeight;
-let windowWidth = window.innerWidth;
-let eachColWidth = (windowWidth/4)
+function kanban() {
+  let windowHeight = window.innerHeight;
+  let windowWidth = window.innerWidth;
+  let eachColWidth = (windowWidth/4)
 
-document.addEventListener("DOMContentLoaded", ()=>{
-    let colnames = ["col1", "col2", "col3", "col4"]
-    colnames.forEach(element => {
-        document.querySelector("."+element).style.width = eachColWidth.toString() + "px";
-    });
+  document.addEventListener("DOMContentLoaded", ()=>{
+      let colnames = ["col1", "col2", "col3", "col4"]
+      colnames.forEach(element => {
+          document.querySelector("."+element).style.width = eachColWidth.toString() + "px";
+      });
 
-    let col1 = document.querySelector(".col1");
-    let col2 = document.querySelector(".col2");
-    let col3 = document.querySelector(".col3");
-    let col4 = document.querySelector(".col4");
+      let col1 = document.querySelector(".col1");
+      let col2 = document.querySelector(".col2");
+      let col3 = document.querySelector(".col3");
+      let col4 = document.querySelector(".col4");
 
-    let lists = document.getElementsByClassName("list");
+      let lists = document.getElementsByClassName("list");
 
-    for (list of lists){
-        list.addEventListener("dragstart", (e) => {
-            let selected = e.target;
+      for (list of lists){
+          list.addEventListener("dragstart", (e) => {
+              let selected = e.target;
 
-            // dragover
-            col2.addEventListener("dragover", (e)=>{
-                e.preventDefault();
-            });
-            col3.addEventListener("dragover", (e)=>{
-                e.preventDefault();
-            });
-            col4.addEventListener("dragover", (e)=>{
-                e.preventDefault();
-            });
+              // dragover
+              col2.addEventListener("dragover", (e)=>{
+                  e.preventDefault();
+              });
+              col3.addEventListener("dragover", (e)=>{
+                  e.preventDefault();
+              });
+              col4.addEventListener("dragover", (e)=>{
+                  e.preventDefault();
+              });
 
-            // drop
-            col2.addEventListener("drop", (e)=>{
-                col2.appendChild(selected);
-                selected = null;
-            });
-            col3.addEventListener("drop", (e)=>{
-                col3.appendChild(selected);
-                selected = null;
-            });
-            col4.addEventListener("drop", (e)=>{
-                col4.appendChild(selected);
-                selected = null;
-            });
-        })
-    };
-});
-
+              // drop
+              col2.addEventListener("drop", (e)=>{
+                  col2.appendChild(selected);
+                  selected = null;
+              });
+              col3.addEventListener("drop", (e)=>{
+                  col3.appendChild(selected);
+                  selected = null;
+              });
+              col4.addEventListener("drop", (e)=>{
+                  col4.appendChild(selected);
+                  selected = null;
+              });
+          })
+      };
+  });
+}
 
 //function called by reports.php and redirects to reports_so.php
 function redirectToReportsSoPage(
@@ -64,6 +65,18 @@ function redirectToReportsSoPage(
   )}&taskName=${encodeURIComponent(taskName)}&userId=${encodeURIComponent(
     userId
   )}&fName=${encodeURIComponent(fName)}&lName=${encodeURIComponent(lName)}&timestampSO=${encodeURIComponent(timestampSO)}`;
+  const newUrl = baseUrl + queryParams;
+  window.location.href = newUrl;
+}
+
+//function called by reports.php and redirects to reports_so.php
+function redirectToReportsSoSupPage(
+  taskId,
+  taskName,
+  status
+) {
+  const baseUrl = "reports_so_sup.php";
+  const queryParams = `?taskId=${encodeURIComponent(taskId)}&taskName=${encodeURIComponent(taskName)}&status=${encodeURIComponent(status)}`;
   const newUrl = baseUrl + queryParams;
   window.location.href = newUrl;
 }
@@ -94,7 +107,7 @@ function cancelButton() {
   const currentPageName = currentPagePath.split("/").pop();
   console.log("Current Page Name:", currentPageName);
 
-  if (currentPageName == "reports_so.php") {
+  if (currentPageName == "reports_so.php" || currentPageName == "reports_so_sup.php") {
     window.location.href = "reports.php";
   } else if (currentPageName == "tasks_so.php") {
     window.location.href = "tasks.php";
@@ -153,15 +166,24 @@ function confirmRemoveSO(tableId) {
 }
 
 function submitReport() {
+  const currentPagePath = window.location.pathname;
+  const currentPageName = currentPagePath.split("/").pop();
   const idReportSup = document.getElementById("id-report-sup");
-  if (idReportSup.value != "") {
-    const popup = document.getElementById("popup");
-    const confirmPopup = document.getElementById('confirm-popup');
-    const confirmPopupOutput = document.getElementById("confirm-popup-output");
+  const popup = document.getElementById("popup");
+  const confirmPopup = document.getElementById('confirm-popup');
+  const confirmPopupOutput = document.getElementById("confirm-popup-output");
+  if(currentPageName == "reports_so_sup.php") {
+    if(idReportSup.value != "") {
+      popup.style.display = "block";
+      confirmPopup.style.display = "block";
+      confirmPopupOutput.innerText = "Confirm submit report?"
+    }
+  } else if(currentPageName == "reports_so.php") {
     popup.style.display = "block";
     confirmPopup.style.display = "block";
-    confirmPopupOutput.innerText = "Confirm submit report?"
+    confirmPopupOutput.innerText = "Confirm complete report?"
   }
+  
 }
 
 function reviewTask() {
@@ -353,28 +375,70 @@ function filtertable(text) {
   }
 }
 
+function radioReports() {
+  const selectedValue = document.querySelector('input[name="reportType"]:checked').value;
+  const table1 = document.getElementById("tasktable");
+  const table2 = document.getElementById("tasktable2");
+  if (selectedValue === 'MyReports') {
+      console.log("My Reports selected");
+      table1.style.display = "inline-table";
+      table2.style.display = "none";
+  } else if (selectedValue === 'SOReports') {
+      console.log("Security Officer's Reports selected");
+      table1.style.display = "none";
+      table2.style.display = "inline-table";
+  }
+}
+
 function init() {
   const currentPagePath = window.location.pathname;
   const currentPageName = currentPagePath.split("/").pop();
   console.log("Current Page Name:", currentPageName);
   if (currentPageName == "tasks.php") {
+    kanban();
     toggleView();
-    filterdropdown.addEventListener("change", function () {
+    document.addEventListener("DOMContentLoaded", function () {
       var dropdown = document.getElementById("filterdropdown");
-      var selectedValue = dropdown.value;
-      filtertable(selectedValue);
-    });
+      if (dropdown !== null && dropdown !== undefined) {
+          dropdown.addEventListener("change", function () {
+              var selectedValue = dropdown.value;
+              filtertable(selectedValue);
+          });
+      }
+  });
     document
       .getElementById("toggleViewButton")
       .addEventListener("click", toggleView);
   } else if (currentPageName == "tasks_so.php") {
     const status = getUrlParam('status');
   } else if (currentPageName == "reports.php") {
-    filterdropdown.addEventListener("change", function () {
-      var dropdown = document.getElementById("filterdropdown");
-      var selectedValue = dropdown.value;
-      filtertable(selectedValue);
+    const table1 = document.getElementById("tasktable");
+    const table2 = document.getElementById("tasktable2");
+    const radioButtons = document.querySelectorAll('input[name="reportType"]');
+    const storedValue = localStorage.getItem("selectedReportType");
+    
+    radioButtons.forEach(function (radioButton) {
+      radioButton.addEventListener("change", function () {
+          localStorage.setItem("selectedReportType", radioButton.value);
+      });
     });
+    if (storedValue) {
+      var selectedRadioButton = document.querySelector('input[name="reportType"][value="' + storedValue + '"]');
+      if (selectedRadioButton) {
+          selectedRadioButton.checked = true;
+      }
+      console.log("storedValue: "+storedValue);
+      if(storedValue == 'MyReports') {
+        table1.style.display = "inline-table";
+        table2.style.display = "none";
+      } else if(storedValue == 'SOReports') {
+        table1.style.display = "none";
+        table2.style.display = "inline-table";
+      }
+    } else {
+      table1.style.display = "inline-table";
+      table2.style.display = "none";
+    }
   }
 }
 init();
