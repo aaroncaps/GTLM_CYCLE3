@@ -40,7 +40,7 @@
                 <!-- hamburger menu ends -->
                 <a href="../profile/profile.php">Profile</a>
                 <a href="../help_support/help_support.php">Help & Support</a>
-                <a href="../login/login.php">Logout</a>
+                <a href="../login/logout.php">Logout</a>
             </div>
             <div class="upper_navbar_user">
                 <?php
@@ -48,6 +48,10 @@
                 $loginUserId = $_SESSION['loginUserId'];
                 $loginName = $_SESSION['loginName'];
                 echo 'Welcome, ' . $loginName;
+                if($loginUserId=='') {
+                    header("Location: ../login/login.php");
+                    exit();
+                }
                 ?>
             </div>
             <div class="main_content">
@@ -65,7 +69,7 @@
                         <a href="../help_support/help_support.php">
                             <li>Help & Support</li>
                         </a>
-                        <a href="../login/login.php">
+                        <a href="../login/logout.php">
                             <li>Logout</li>
                         </a>
                     </ul>
@@ -104,30 +108,15 @@
                     $userId = $_GET['userId'];
                     $timestampSO = $_GET['timestampSO'];
                     $reportSO = null;
-                    $reportSup = null;
-                    $attachmentSO = null;
                     $statusSO = null;
 
                     //retrieve info from SO
-                    $sql = "SELECT report, attachment, status FROM Report WHERE taskId = ? AND userId = ?";
+                    $sql = "SELECT report, status FROM Report WHERE taskId = ? AND userId = ?";
                     $statement = mysqli_stmt_init($conn);
                     if (mysqli_stmt_prepare($statement, $sql)) {
                         mysqli_stmt_bind_param($statement, 'ii', $taskId, $userId);
                         if (mysqli_stmt_execute($statement)) {
-                            mysqli_stmt_bind_result($statement, $reportSO, $attachmentSO, $statusSO);
-                            if (mysqli_stmt_fetch($statement)) {
-
-                            } 
-                        }
-                        mysqli_stmt_close($statement);
-                    }
-                    //retrieve info from Supervisor
-                    $sql = "SELECT report FROM Report WHERE taskId = ? AND userId = ?";
-                    $statement = mysqli_stmt_init($conn);
-                    if (mysqli_stmt_prepare($statement, $sql)) {
-                        mysqli_stmt_bind_param($statement, 'ii', $taskId, $loginUserId);
-                        if (mysqli_stmt_execute($statement)) {
-                            mysqli_stmt_bind_result($statement, $reportSup);
+                            mysqli_stmt_bind_result($statement, $reportSO, $statusSO);
                             if (mysqli_stmt_fetch($statement)) {
 
                             } 
@@ -135,22 +124,8 @@
                         mysqli_stmt_close($statement);
                     }
                     mysqli_close($conn);
-                    //Check what file type if the attachment
-                    if (strpos($attachmentSO, '%PDF') === 0) {
-                        $fileType = 'pdf';
-                    } else if (strpos($attachmentSO, "\xFF\xD8") === 0) {
-                        $fileType = 'jpeg';
-                    } else if (strpos($attachmentSO, "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") === 0) {
-                        $fileType = 'png';
-                    } else if (strpos($attachmentSO, "PK") === 0) {
-                        $fileType = 'docx';
-                    } else if (strpos($attachmentSO, "PK") === 0) {
-                        $fileType = 'xlsx';
-                    } else {
-                        $fileType = '';
-                    }
                     ?>
-                    <h3>Security Officers's Report</h3>
+                    <h3>Supervisor's Report</h3>
                     <div>
                         <label for="user-id-output">User ID:</label>
                         <output id="user-id-output" name="user-id-output"><?php echo (isset($_GET['userId']) ? htmlspecialchars($_GET['userId']) : ''); ?></output>
@@ -170,28 +145,6 @@
                     <div class="readOnly">
                         <label for="id-report-so">Report:</label>
                         <textarea id="id-report-so" name="id-report-so" rows="8" cols="50" readonly><?php echo htmlspecialchars($reportSO) ?></textarea>
-                    </div>
-                    <div>
-                        <label>Attached File:</label>
-                        <?php
-                        if ($fileType === 'pdf' || $fileType === 'docx' || $fileType === 'xlsx') {
-                            $contentType = '';
-                            if ($fileType === 'pdf') {
-                                $contentType = 'application/pdf';
-                            } elseif ($fileType === 'docx') {
-                                $contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-                            } elseif ($fileType === 'xlsx') {
-                                $contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                            }
-                            $filename = 'Report_Attachment.' . $fileType;
-                            echo "<br><a href=\"data:$contentType;base64," . base64_encode($attachmentSO) . "\" target=\"_blank\" download=\"$filename\">$filename</a>";
-                        } else if ($fileType === 'jpeg' || $fileType === 'png') {
-                            echo "<br><img src=\"data:image/jpeg;base64," . base64_encode($attachmentSO) . "\" alt=\"Attachment\" style=\"max-width: 500px; max-height: 500px;\" />";
-                        } else {
-                            echo "<output>-</output>";
-                        }
-                        ?>
-                        
                     </div>
                     <br>
                     <div class="right-button">
@@ -213,7 +166,7 @@
                         </div>
                         <div class="right-button">
                             <button type="button" id="cancel-button" onclick="cancelPopup()">Cancel</button>
-                            <button type="submit" id="process-button">Confirm</button>
+                            <button type="submit" id="process-button" onclick="submitReportConfirm()">Confirm</button>
                         </div>
                     </div>
                 </form>

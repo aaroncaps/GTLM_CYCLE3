@@ -40,7 +40,7 @@
                 <!-- hamburger menu ends -->
                 <a href="../profile/profile.php">Profile</a>
                 <a href="../help_support/help_support.php">Help & Support</a>
-                <a href="../login/login.php">Logout</a>
+                <a href="../login/logout.php">Logout</a>
             </div>
             <div class="upper_navbar_user">
                 <?php
@@ -48,6 +48,10 @@
                 $loginUserId = $_SESSION['loginUserId'];
                 $loginName = $_SESSION['loginName'];
                 echo 'Welcome, ' . $loginName;
+                if($loginUserId=='') {
+                    header("Location: ../login/login.php");
+                    exit();
+                }
                 ?>
             </div>
             <div class="main_content">
@@ -65,7 +69,7 @@
                         <a href="../help_support/help_support.php">
                             <li>Help & Support</li>
                         </a>
-                        <a href="../login/login.php">
+                        <a href="../login/logout.php">
                             <li>Logout</li>
                         </a>
                     </ul>

@@ -37,26 +37,14 @@ if (isset($_POST["task-id"])) {
         } else {
             echo "Error in SQL statement: " . mysqli_error($conn);
         }
-        //Check if every task report of a particular taskId has been completed
-        $sql = "SELECT taskId, 
-                CASE WHEN COUNT(*) = SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) 
-                    THEN 1 
-                    ELSE 0 
-                END AS all_completed
-                FROM Report
-                WHERE taskId = ? AND userId != $loginUserId
-                GROUP BY taskId";
+
+        //Update the status to Completed
+        $sql = "UPDATE Task SET statusDis = 'DIS05' WHERE taskId = ?";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             mysqli_stmt_bind_param($statement, 's', $taskId);
-            mysqli_stmt_execute($statement);
-            $result = mysqli_stmt_get_result($statement);
-            $row = mysqli_fetch_assoc($result);
-        
-            if ($row) {
-                echo "Task ID: " . $row['taskId'] . "<br>";
-                echo "All Completed: " . $row['all_completed'] . "<br>";
-                $allCompleted = $row['all_completed'];
+            if (mysqli_stmt_execute($statement)) {
+                echo "Task taskIdId: " . $taskId . " updated successfully.<br>";
             } else {
                 header("Location: reports.php?messageError=" . urlencode($messageError) . "(" . mysqli_stmt_error($statement) . ")");
                 mysqli_stmt_close($statement);
@@ -68,32 +56,12 @@ if (isset($_POST["task-id"])) {
             echo "Error in SQL statement: " . mysqli_error($conn);
         }
 
-        //Update the status to Completed
-        if($allCompleted) {
-            $sql = "UPDATE Task SET statusSup = 'SUP04' WHERE taskId = ?";
-            $statement = mysqli_prepare($conn, $sql);
-            if ($statement) {
-                mysqli_stmt_bind_param($statement, 's', $taskId);
-                if (mysqli_stmt_execute($statement)) {
-                    echo "Task taskIdId: " . $taskId . " updated successfully.<br>";
-                } else {
-                    header("Location: reports.php?messageError=" . urlencode($messageError) . "(" . mysqli_stmt_error($statement) . ")");
-                    mysqli_stmt_close($statement);
-                    mysqli_close($conn);
-                    exit();
-                }
-                mysqli_stmt_close($statement);
-            } else {
-                echo "Error in SQL statement: " . mysqli_error($conn);
-            }
-        }
-
         //Add Event Logs to be used by Administrator
         $sql = "INSERT INTO Event_Logs (action, userId, timestamp) VALUES (?, ?, current_timestamp())";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             mysqli_stmt_bind_param($statement, "si", $action, $loginUserId);
-            $action = "Supervisor completes the report of Security Officer";
+            $action = "Dispatcher completes the report of Supervisor";
             $timestamp = null;
             if (mysqli_stmt_execute($statement)) {
                 echo "Event_Logs User ID: " . $loginUserId . " inserted successfully.<br>";
@@ -111,7 +79,7 @@ if (isset($_POST["task-id"])) {
         $messageSuccess = "Report completed successfully!";
     } else if($_POST["option"] == 'sup') {
         //Updates the Report status of Supervisor
-        $sql = "UPDATE Report SET status = 'Submitted', report = ?, timestamp = current_timestamp() WHERE taskId = ? AND userId = ?";
+        $sql = "UPDATE Report SET status = 'Completed', report = ?, timestamp = current_timestamp() WHERE taskId = ? AND userId = ?";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             mysqli_stmt_bind_param($statement, 'sii', $reportSup, $taskId, $loginUserId);
