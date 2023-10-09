@@ -35,7 +35,7 @@ if (isset($_POST["option"])) {
     $messageUpdate = "Task updated successfully!";
     $messageError = "Process  failed. Please try again.";
     if($_POST["option"] == 'review') {
-        $sql = "UPDATE Task SET statusSup = 'SUP02' WHERE taskId = ?";
+        $sql = "UPDATE Task SET statusSup = 'SUP02', statusDis = 'DIS04' WHERE taskId = ?";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             mysqli_stmt_bind_param($statement, 's', $taskId);
@@ -335,7 +335,7 @@ if (isset($_POST["option"])) {
         }
         header("Location: tasks.php?message=" . urlencode($messageUpdate));
     }  else if($_POST["option"] == 'decline') {
-        $sql = "UPDATE Task SET statusSup = 'DIS03', declineReason = ? WHERE taskId = ?";
+        $sql = "UPDATE Task SET statusSup = NULL, statusDis = 'DIS03', declineReason = ? WHERE taskId = ?";
         $statement = mysqli_prepare($conn, $sql);
         if ($statement) {
             mysqli_stmt_bind_param($statement, 'ss', $declineReason, $taskId);

@@ -349,6 +349,10 @@ select#filterdropdown {
     height: 35px;
 }
 
+select#assignToId {
+    height: 35px;
+}
+
 form#taskForm {
     margin-top: 20px;
 }

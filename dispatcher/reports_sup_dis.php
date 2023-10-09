@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Supervisor - Create Reports</title>
+    <title>Administrator - Create Reports</title>
     <!-- css -->
     <link rel="stylesheet" href="../styles/navigation.css" />
     <link rel="stylesheet" href="../styles/style.css" />
 
     <!-- js -->
     <script src="../js/core.js"></script>
-    <script src="../js/supervisor.js" defer></script>
+    <script src="../js/dispatcher.js" defer></script>
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/60ed8990c9.js" crossorigin="anonymous"></script>
 </head>
@@ -80,7 +80,7 @@
                         echo '<div class="success-message">' . htmlspecialchars($message) . '</div>';
                     } 
                 ?>
-                <form id="myForm" action="reports_so_process.php" method="POST">
+                <form id="myForm" action="reports_sup_process.php" method="POST">
                 <input type="hidden" id="task-id" name="task-id" value="<?php echo (isset($_GET['taskId']) ? htmlspecialchars($_GET['taskId']) : ''); ?>" />
                 <input type="hidden" id="option" name="option" value="sup"/>
                     <?php

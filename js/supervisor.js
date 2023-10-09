@@ -164,6 +164,9 @@ function confirmRemoveSO(tableId) {
     declinePopup.style.display = "none";
   }
 }
+function submitReportConfirm() {
+  document.getElementById("myForm").submit();
+}
 
 function submitReport() {
   const currentPagePath = window.location.pathname;
@@ -183,7 +186,9 @@ function submitReport() {
     confirmPopup.style.display = "block";
     confirmPopupOutput.innerText = "Confirm complete report?"
   }
-  
+  document.getElementById("myForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+  });
 }
 
 function reviewTask() {

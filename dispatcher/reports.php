@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Supervisor - Reports</title>
+    <title>Administrator - Reports</title>
     <!-- css -->
     <link rel="stylesheet" href="../styles/navigation.css" />
     <link rel="stylesheet" href="../styles/style.css" />
 
     <!-- js -->
     <script src="../js/core.js"></script>
-    <script src="../js/supervisor.js" defer></script>
+    <script src="../js/dispatcher.js" defer></script>
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/60ed8990c9.js" crossorigin="anonymous"></script>
 </head>
@@ -85,7 +85,7 @@
                         <input type="radio" name="reportType" value="MyReports" onchange="radioReports()" checked> My Reports
                     </label>
                     <label class="so-label">
-                        <input type="radio" name="reportType" value="SOReports" onchange="radioReports()"> Security Officers's Reports
+                        <input type="radio" name="reportType" value="SOReports" onchange="radioReports()"> Supervisor's Reports
                     </label>
                 </div>
                 <form>
@@ -93,7 +93,7 @@
                         <table id="tasktable">
                             <thead>
                                 <tr>
-                                    <th>Supervisor's ID</th>
+                                    <th>Dispatcher's ID</th>
                                     <th>Name</th>
                                     <th>Task</th>
                                     <th>Status</th>
@@ -105,12 +105,13 @@
                                     require_once "../inc/dbconn.inc.php";
                                     // $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     // FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    // WHERE T.statusDis IN ('DIS04','DIS05') AND T.supervisorId = $loginUserId AND R.userId = $loginUserId;
+                                    // WHERE T.statusDis IN ('DIS04','DIS05') AND T.dispatcherId = $loginUserId AND R.userId = $loginUserId;
                                     // ";
 
                                     $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    WHERE T.supervisorId = $loginUserId AND R.userId = $loginUserId;
+                                    WHERE U.role = 'Dispatcher' 
+                                    AND T.dispatcherId = $loginUserId AND R.userId = $loginUserId;
                                     ";
                                     $reports = [];
 
@@ -123,31 +124,6 @@
                                         }
                                     }
                                     foreach ($reports as $report) :
-                                        //Check if every task report of a particular taskId has been completed
-                                        $allCompleted = 0;
-                                        $sql = "SELECT taskId, 
-                                        CASE WHEN COUNT(*) = SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) 
-                                            THEN 1 
-                                            ELSE 0 
-                                        END AS all_completed
-                                        FROM Report
-                                        WHERE taskId = ? AND userId != $loginUserId
-                                        GROUP BY taskId";
-                                        $statement = mysqli_prepare($conn, $sql);
-                                        if ($statement) {
-                                            mysqli_stmt_bind_param($statement, 's', $report['taskId']);
-                                            mysqli_stmt_execute($statement);
-                                            $result = mysqli_stmt_get_result($statement);
-                                            $row = mysqli_fetch_assoc($result);
-
-                                        if ($row) {
-                                            $allCompleted = $row['all_completed'];
-                                        }
-                                        mysqli_stmt_close($statement);
-                                        } else {
-                                        echo "Error in SQL statement: " . mysqli_error($conn);
-                                        }
-                                        if($allCompleted) {
                                 ?>
                                     <tr>
                                         <td>
@@ -170,7 +146,7 @@
                                         ?>
                                         </td>
                                     </tr>
-                                <?php }
+                                <?php 
                                 endforeach;
                                 ?>
                                 
@@ -179,7 +155,7 @@
                         <table id="tasktable2">
                             <thead>
                                 <tr>
-                                    <th>Security Officer's ID</th>
+                                    <th>Supervisor's ID</th>
                                     <th>Name</th>
                                     <th>Task</th>
                                     <th>Status</th>
@@ -191,12 +167,14 @@
                                     require_once "../inc/dbconn.inc.php";
                                     // $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     // FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    // WHERE T.statusSup IN ('SUP03','SUP04') AND T.supervisorId = $loginUserId AND R.userId != $loginUserId;
+                                    // WHERE T.statusDis IN ('DIS04','DIS05') AND T.statusSup = 'SUP04' 
+                                    // AND T.dispatcherId = $loginUserId AND R.userId != $loginUserId;
                                     // ";
 
                                     $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    WHERE T.supervisorId = $loginUserId AND R.userId != $loginUserId;
+                                    WHERE U.role = 'Supervisor'
+                                    AND T.dispatcherId = $loginUserId AND R.userId != $loginUserId;
                                     ";
                                     $reports = [];
 
