@@ -84,7 +84,7 @@ function kanban() {
     status
   ) {
     const baseUrl = "reports_sup_dis.php";
-    const queryParams = `?taskId=${encodeURIComponent(taskId)}&taskName=${encodeURIComponent(taskName)}&status=${encodeURIComponent(status)}`;
+    const queryParams = `?taskId=${encodeURIComponent(taskId)}&taskName=${encodeURIComponent(taskName)}&status=${encodeURIComponent(status)}&statusDis=${encodeURIComponent(statusDis)}`;
     const newUrl = baseUrl + queryParams;
     window.location.href = newUrl;
   }

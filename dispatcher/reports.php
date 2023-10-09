@@ -112,7 +112,7 @@
                                     // WHERE T.statusDis IN ('DIS04','DIS05') AND T.dispatcherId = $loginUserId AND R.userId = $loginUserId;
                                     // ";
 
-                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
+                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status, T.statusDis
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
                                     WHERE U.role = 'Dispatcher' 
                                     AND T.dispatcherId = $loginUserId AND R.userId = $loginUserId;
@@ -132,7 +132,7 @@
                                     <tr>
                                         <td>
                                             <a href="javascript:void(0);" onclick="redirectToReportsSoSupPage('<?php echo $report['taskId']; ?>',
-                                                '<?php echo $report['taskName']; ?>', '<?php echo $report['status']; ?>')">
+                                                '<?php echo $report['taskName']; ?>', '<?php echo $report['status']; ?>'), '<?php echo $report['statusDis']; ?>')">
                                                 <?php echo $report['userId']; ?>
                                             </a>
                                         </td>

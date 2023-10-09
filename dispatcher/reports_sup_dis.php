@@ -122,14 +122,14 @@
                         <label for="task-name">Task Name:</label>
                         <output id="task-name" name="task-name"><?php echo (isset($_GET['taskName']) ? htmlspecialchars($_GET['taskName']) : ''); ?></output>
                     </div>
-                    <div class="<?php echo $_GET['status'] == 'Pending' ? 'labelAndTextarea' : 'readOnly' ?>">
+                    <div class="<?php echo $_GET['status'] == 'Pending' && $_GET['statusDis'] == 'DIS05' ? 'labelAndTextarea' : 'readOnly' ?>">
                         <label for="id-report-sup">Report:</label>
-                        <textarea id="id-report-sup" name="id-report-sup" rows="8" cols="50" <?php echo $_GET['status'] == 'Pending' ? 'required' : 'readonly' ?>><?php echo htmlspecialchars($reportSup) ?></textarea>
+                        <textarea id="id-report-sup" name="id-report-sup" rows="8" cols="50" <?php echo $_GET['status'] == 'Pending' && $_GET['statusDis'] == 'DIS05' ? 'required' : 'readonly' ?>><?php echo htmlspecialchars($reportSup) ?></textarea>
                     </div>
                     <div class="right-button">
                     <button type="button" onclick="cancelButton()">Back</button>
                     <?php
-                    if($_GET['status'] == 'Pending') {
+                    if($_GET['status'] == 'Pending' && $_GET['statusDis'] == 'DIS05') {
                     ?>
                     <button type="submit" id="submit-report" onclick="submitReport()">
                         Submit

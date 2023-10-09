@@ -112,9 +112,10 @@
                                     // WHERE T.statusDis IN ('DIS04','DIS05') AND T.supervisorId = $loginUserId AND R.userId = $loginUserId;
                                     // ";
 
-                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
+                                    $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status, T.dispatcherId
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    WHERE T.supervisorId = $loginUserId AND R.userId = $loginUserId;
+                                    WHERE U.role = 'Supervisor' 
+                                    AND T.supervisorId = $loginUserId AND R.userId = $loginUserId;
                                     ";
                                     $reports = [];
 
@@ -135,11 +136,11 @@
                                             ELSE 0 
                                         END AS all_completed
                                         FROM Report
-                                        WHERE taskId = ? AND userId != $loginUserId
+                                        WHERE taskId = ? AND userId NOT IN (? , ?) 
                                         GROUP BY taskId";
                                         $statement = mysqli_prepare($conn, $sql);
                                         if ($statement) {
-                                            mysqli_stmt_bind_param($statement, 's', $report['taskId']);
+                                            mysqli_stmt_bind_param($statement, 'iii', $report['taskId'], $loginUserId, $report['dispatcherId']);
                                             mysqli_stmt_execute($statement);
                                             $result = mysqli_stmt_get_result($statement);
                                             $row = mysqli_fetch_assoc($result);
@@ -200,7 +201,8 @@
 
                                     $sql = "SELECT R.taskId, R.userId, R.timestamp, T.taskName, U.fName, U.lName, R.status
                                     FROM Report R JOIN Task T ON R.taskId = T.taskId JOIN User U ON R.userId = U.userId
-                                    WHERE T.supervisorId = $loginUserId AND R.userId != $loginUserId;
+                                    WHERE U.role = 'Security Officer' 
+                                    AND T.supervisorId = $loginUserId AND R.userId != $loginUserId;
                                     ";
                                     $reports = [];
 
