@@ -1,109 +1,122 @@
 const prevButton = document.getElementById("prev");
-        const nextButton = document.getElementById("next");
-        const monthYear = document.getElementById("month-year");
-        const calendarTable = document.getElementById("calendar-table");
-        const selectedDateElement = document.getElementById("selected-date");
-        const taskList = document.getElementById("task-list");
-        const taskInput = document.getElementById("task-input");
-        const addTaskButton = document.getElementById("add-task");
+const nextButton = document.getElementById("next");
+const monthYear = document.getElementById("month-year");
+const calendarTable = document.getElementById("calendar-table");
+const selectedDateElement = document.getElementById("selected-date");
+// const taskList = document.getElementById("task-list");
+// const taskInput = document.getElementById("task-input");
+// const addTaskButton = document.getElementById("add-task");
+let dateStringSelected;
 
-        let currentDate = new Date();
-        let selectedDate = currentDate;
+let currentDate = new Date();
+let selectedDate = currentDate;
 
-        function generateCalendar() {
-            // Clear the previous calendar
-            calendarTable.querySelector("tbody").innerHTML = "";
+function generateCalendar() {
+    // Clear the previous calendar
+    calendarTable.querySelector("tbody").innerHTML = "";
 
-            // Get the first day of the current month
-            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    // Get the first day of the current month
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-            // Calculate the number of days in the current month
-            const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-            const totalDays = lastDayOfMonth.getDate();
+    // Calculate the number of days in the current month
+    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const totalDays = lastDayOfMonth.getDate();
 
-            // Calculate the day of the week for the first day of the month
-            const firstDayOfWeek = firstDayOfMonth.getDay();
+    // Calculate the day of the week for the first day of the month
+    const firstDayOfWeek = firstDayOfMonth.getDay();
 
-            // Create the calendar grid
-            let date = 1;
-            for (let row = 0; row < 6; row++) {
-                const newRow = calendarTable.querySelector("tbody").insertRow();
-                for (let col = 0; col < 7; col++) {
-                    if (row === 0 && col < firstDayOfWeek) {
-                        // Add empty cells before the first day of the month
-                        const cell = newRow.insertCell();
-                        cell.textContent = "";
-                    } else if (date <= totalDays) {
-                        // Add cells with date
-                        const cell = newRow.insertCell();
-                        cell.textContent = date;
-                        const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
-                        cell.addEventListener("click", () => {
-                            const allCells = calendarTable.querySelectorAll('td');
-                                allCells.forEach(cell => {
-                                        cell.className = '';
-                                });
-                            cell.classList.add('selected')
-                            onDateClick(clickedDate);
-                        });
-                        
-                        date++;
-                    }
-                }
+    // Create the calendar grid
+    let date = 1;
+    for (let row = 0; row < 6; row++) {
+        const newRow = calendarTable.querySelector("tbody").insertRow();
+        for (let col = 0; col < 7; col++) {
+            if (row === 0 && col < firstDayOfWeek) {
+                // Add empty cells before the first day of the month
+                const cell = newRow.insertCell();
+                cell.textContent = "";
+            } else if (date <= totalDays) {
+                // Add cells with date
+                const cell = newRow.insertCell();
+                cell.textContent = date;
+                const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+                cell.addEventListener("click", () => {
+                    const allCells = calendarTable.querySelectorAll('td');
+                    allCells.forEach(cell => {
+                        cell.className = '';
+                    });
+                    cell.classList.add('selected')
+                    onDateClick(clickedDate);
+                });
+
+                date++;
             }
-
-            // Update the month and year in the header
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            monthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
         }
+    }
 
-        function onDateClick(date) {
-            
-        
-            selectedDate = date;
-            selectedDateElement.textContent = date.toDateString();
-       
-            
-            displayTasksForDate(date);
-        }
+    // Update the month and year in the header
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    monthYear.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+}
 
-        function displayTasksForDate(date) {
-            // Here you can implement code to display tasks for the selected date.
-            // You might use an array or some storage mechanism to manage tasks for each date.
-            // For simplicity, we'll just display an empty task list.
+function onDateClick(date) {
 
-            taskList.innerHTML = "<li>No tasks for this date.</li>";
-        }
 
-        function addTask() {
-            const taskText = taskInput.value.trim();
-            if (taskText === "") {
-                return;
-            }
+    selectedDate = date;
+    // selectedDateElement.textContent = date.toDateString();
+    var dategenerated = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    var dateString = dategenerated.toString();
+    dateStringSelected = dateString;
+    console.log(dateStringSelected);
+    document.cookie = "currentDateSelected = " + dateString;
 
-            // Here you can implement code to add the task to the selected date.
-            // You might use an array or some storage mechanism to manage tasks for each date.
+    // displayTasksForDate(date);
+    
+}
 
-            // For now, let's just refresh the displayed tasks.
-            displayTasksForDate(selectedDate);
+// function post(){
 
-            // Clear the task input field
-            taskInput.value = "";
-        }
+//     $.post('calendar.php', {postText: dateStringSelected}, function(data){
+//         $('#result').html(data);
+//     });
+// }
 
-        prevButton.addEventListener("click", () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            generateCalendar();
-            onDateClick(selectedDate);
-        });
+function displayTasksForDate(date) {
+    // Here you can implement code to display tasks for the selected date.
+    // You might use an array or some storage mechanism to manage tasks for each date.
+    // For simplicity, we'll just display an empty task list.
 
-        nextButton.addEventListener("click", () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            generateCalendar();
-            onDateClick(selectedDate);
-        });
+    taskList.innerHTML = "<li>No tasks for this date.</li>";
+}
 
-        addTaskButton.addEventListener("click", addTask);
+function addTask() {
+    const taskText = taskInput.value.trim();
+    if (taskText === "") {
+        return;
+    }
 
-        // Initial calendar generation
-        generateCalendar();
+    // Here you can implement code to add the task to the selected date.
+    // You might use an array or some storage mechanism to manage tasks for each date.
+
+    // For now, let's just refresh the displayed tasks.
+    displayTasksForDate(selectedDate);
+
+    // Clear the task input field
+    taskInput.value = "";
+}
+
+prevButton.addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    generateCalendar();
+    onDateClick(selectedDate);
+});
+
+nextButton.addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    generateCalendar();
+    onDateClick(selectedDate);
+});
+
+// addTaskButton.addEventListener("click", addTask);
+
+// Initial calendar generation
+generateCalendar();

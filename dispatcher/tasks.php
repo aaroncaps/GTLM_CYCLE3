@@ -30,7 +30,10 @@
         <a href="reports.php">
           <li>Reports</li>
         </a>
+        <a href="calendar.php">
+          <li>Calendar</li>
         </a>
+        <!-- </a> -->
       </ul>
     </div>
     <div class="right_content">

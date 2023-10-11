@@ -484,3 +484,9 @@ textarea {
 {
     margin-bottom: 10px;
 }
+
+/*  */
+.eachTaskListCalendar{
+    margin-bottom: 10px !important;
+    color: red;
+}
