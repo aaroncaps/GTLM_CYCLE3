@@ -62,8 +62,9 @@ function onDateClick(date) {
 
 
     selectedDate = date;
+    let month = date.getMonth() + 1;
     // selectedDateElement.textContent = date.toDateString();
-    var dategenerated = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    var dategenerated = date.getFullYear() + "-" + month + "-" + date.getDate();
     var dateString = dategenerated.toString();
     dateStringSelected = dateString;
     console.log(dateStringSelected);
