@@ -23,13 +23,13 @@
   <div class="wrapper">
     <div class="left_navbar">
       <div class="logo">
-        <a href="tasks.html"><img src="../images/Logo.png" alt="" /></a>
+        <a href="tasks.php"><img src="../images/Logo.png" alt="" /></a>
       </div>
       <ul>
-        <a href="tasks.html">
+        <a href="tasks.php">
           <li>Tasks</li>
         </a>
-        <a href="reports.html">
+        <a href="reports.php">
           <li>Reports</li>
         </a>
      
@@ -41,26 +41,26 @@
         <i class="fa-solid fa-bars" onclick="handleHamburger()"></i>
         <i class="fa-solid fa-xmark" onclick="handleXmark()"></i>
         <!-- hamburger menu ends -->
-        <a href="../profile/profile.html">Profile</a>
-        <a href="../help_support/help_support.html">Help & Support</a>
-        <a href="../login/login.html">Logout</a>
+        <a href="../profile/profile.php">Profile</a>
+        <a href="../help_support/help_support.php">Help & Support</a>
+        <a href="../login/login.php">Logout</a>
       </div>
       <div class="main_content">
         <div class="mobile_menu">
           <ul>
-            <a href="tasks.html">
+            <a href="tasks.php">
               <li>Tasks</li>
             </a>
-            <a href="reports.html">
+            <a href="reports.php">
               <li>Reports</li>
             </a>
-            <a href="../profile/profile.html">
+            <a href="../profile/profile.php">
               <li>Profile</li>
           </a>
-          <a href="../help_support/help_support.html">
+          <a href="../help_support/help_support.php">
               <li>Help & Support</li>
           </a>
-          <a href="../login/login.html">
+          <a href="../login/login.php">
               <li>Logout</li>
           </a>
           </ul>
@@ -95,10 +95,10 @@
         </ul>
 
         <h3>Privacy Policy</h3>
-        <p>For information on how we handle your data, please review our <a href="privacy-policy.html">Privacy Policy</a>.</p>
+        <p>For information on how we handle your data, please review our <a href="privacy_policy.php">Privacy Policy</a>.</p>
 
         <h3>Terms of Service</h3>
-        <p>Read our <a href="terms-of-service.html">Terms of Service</a> to understand the terms and conditions
+        <p>Read our <a href="terms_service.php">Terms of Service</a> to understand the terms and conditions
           governing the use of our services.</p>
 
         <p>Thank you for choosing TaskForce Security. We are committed to providing you with exceptional support and
