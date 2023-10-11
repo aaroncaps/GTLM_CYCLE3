@@ -62,12 +62,13 @@ function onDateClick(date) {
 
 
     selectedDate = date;
+    console.log(date);
     // selectedDateElement.textContent = date.toDateString();
-    var dategenerated = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
-    var dateString = dategenerated.toString();
-    dateStringSelected = dateString;
-    console.log(dateStringSelected);
-    document.cookie = "currentDateSelected = " + dateString;
+    // var dategenerated = date.getFullYear() + "-" + month + "-" + date.getDate();
+    // var dateString = dategenerated.toString();
+    // dateStringSelected = dateString;
+    // // console.log(dateStringSelected);
+    // document.cookie = "currentDateSelected = " + dateString;
 
     // displayTasksForDate(date);
     
