@@ -117,6 +117,7 @@
 
                     $sql = "SELECT * FROM task 
                     WHERE dispatcherId = $loginUserId AND dateFrom = $selectedCurrentDate" ;
+                    
                     if ($result = mysqli_query($conn, $sql)){
                         // count the row   
                         $numberOfRows = mysqli_num_rows($result);
