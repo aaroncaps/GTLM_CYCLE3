@@ -349,10 +349,18 @@ alert(confirmationMessage);
   });
 
   // Add an event listener to the "Search" button
-  const searchButton = document.getElementById("searchButton");
-  if (searchButton) {
-    searchButton.addEventListener("click", filterAndPopulateTable);
-  }
+  document.getElementById("searchButton").addEventListener("click", function () {
+    // Get the selected date values from the input fields
+    const dateFrom = document.getElementById("dateFrom").value;
+    const dateTo = document.getElementById("dateTo").value;
+
+    // Perform an AJAX request or a page reload with the selected date values
+    // You will pass these date values as URL parameters to your PHP script.
+    // Here, we're just reloading the page with the date values as URL parameters.
+
+    // Redirect to the same page with dateFrom and dateTo as parameters
+    window.location.href = 'event_logs.php?dateFrom=' + dateFrom + '&dateTo=' + dateTo;
+});
 
   // Function to generate a CSV string from the table data
   function generateCSV() {
@@ -393,6 +401,33 @@ alert(confirmationMessage);
       document.body.removeChild(a);
     }
   }
+
+  // Function to filter the event log data based on date and user name
+// Function to filter the event logs based on date and user name
+function filterEventLogs() {
+  const dateFrom = document.getElementById("dateFrom").value;
+  const dateTo = document.getElementById("dateTo").value;
+  const userName = document.getElementById("userName").value;
+
+  // Perform the filtering logic here
+  const filteredData = eventLogData.filter((event) => {
+    const eventDate = new Date(event.date); // Convert date string to Date object
+    const isDateInRange = eventDate >= new Date(dateFrom) && eventDate <= new Date(dateTo);
+
+    return isDateInRange && (userName === '' || event.user.toLowerCase().includes(userName.toLowerCase()));
+  });
+
+  // Repopulate the table with the filtered data
+  populateEventLogTable(filteredData);
+}
+
+// Add an event listener to the "Search" button
+const searchButton = document.getElementById("searchButton");
+if (searchButton) {
+  searchButton.addEventListener("click", filterEventLogs);
+}
+
+
 
   // Add an event listener to the "Save" button with confirmation
   const saveButton = document.getElementById("saveButton");
@@ -438,8 +473,6 @@ alert(confirmationMessage);
 
 
 });
-
-
 
 
 
