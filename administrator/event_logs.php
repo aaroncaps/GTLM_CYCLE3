@@ -87,10 +87,10 @@
     <?php
     require_once "../inc/dbconn.inc.php";
 
-    // Check if $conn is defined before using it
+    
     if (isset($conn)) {
         $sql = "SELECT event_logs.*, user.fName, user.lName, user.role AS user_role FROM event_logs
-                JOIN user ON event_logs.userid = user.userid"; // Modify this query as needed
+                JOIN user ON event_logs.userid = user.userid"; 
 
         $result = $conn->query($sql);
 
@@ -104,14 +104,14 @@
             echo '<td>' . $date . '</td>';
             echo '<td>' . $time . '</td>';
             echo '<td>' . $row['action'] . '</td>';
-            echo '<td>' . $row['fName'] . ' ' . $row['lName'] . '</td>'; // Display fName and lName
-            echo '<td>' . $row['user_role'] . '</td>'; // Display the role from the user table
+            echo '<td>' . $row['fName'] . ' ' . $row['lName'] . '</td>'; 
+            echo '<td>' . $row['user_role'] . '</td>'; // 
             echo '</tr>';
         }
 
         $conn->close();
     } else {
-        // Handle the case where the database connection failed
+        
         echo "Failed to connect to the database.";
     }
     ?>
