@@ -112,11 +112,11 @@
                     $selectedCurrentDate = $_COOKIE["currentDateSelected"];
                     echo "<h2> Task for the date: $selectedCurrentDate </h2>";
                     // change string to date format
-                    // $new_date = date('Y-m-d', strtotime($selectedCurrentDate));
-                    // echo "<h2> Task for the date: $new_date </h2>";
+                    $new_date = date('Y-m-d', strtotime($selectedCurrentDate));
+                    echo "<h2> Task for the date: $new_date </h2>";
 
                     $sql = "SELECT * FROM task 
-                    WHERE dispatcherId = $loginUserId";
+                    WHERE dispatcherId = $loginUserId AND dateFrom = $selectedCurrentDate" ;
                     if ($result = mysqli_query($conn, $sql)){
                         // count the row   
                         $numberOfRows = mysqli_num_rows($result);
