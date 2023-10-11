@@ -27,8 +27,8 @@
                 <img src="../images/logo.png" alt="">
             </div>
             <ul>
-                <a href="tasks.html"><li>Tasks</li></a>
-                <a href="event_logs.html"><li>Event Logs</li></a>
+                <a href="tasks.php"><li>Tasks</li></a>
+                <a href="event_logs.php"><li>Event Logs</li></a>
                 <a href="system_settings.html"><li>Systen Settings</li></a>
                 
             </ul>
@@ -43,6 +43,19 @@
                 <a href="../help_support/help_support.html">Help & Support</a>
                 <a href="../login/login.html">Logout</a>
             </div>
+            <div class="upper_navbar_user">
+                <?php
+                session_start();
+                $loginUserId = $_SESSION['loginUserId'];
+                $loginName = $_SESSION['loginName'];
+                echo 'Welcome, ' . $loginName;
+                if($loginUserId=='') {
+                  header("Location: ../login/login.php");
+                  exit();
+                }
+                ?>
+              </div>
+
             <div class="main_content">
                 <div class="mobile_menu">
                     <ul>
@@ -54,19 +67,56 @@
                     </ul>
                 </div>
                 <h2>Tasks > Onboarding</h2>
-                <!-- put your code here -->
+
+                <?php
+            if (isset($_GET['messageError'])) {
+                $error_message = $_GET['messageError'];
+                echo '<div class="error-message">' . htmlspecialchars($error_message) . '</div>';
+            } else if (isset($_GET['message'])) {
+                $message = $_GET['message'];
+                echo '<div class="success-message">' . htmlspecialchars($message) . '</div>';
+            } 
+        ?>
+<?php
+if (isset($_GET['requestId'])) {
+    $requestId = $_GET['requestId'];
+    require_once "../inc/dbconn.inc.php";
+    $stmt = $conn->prepare("SELECT dateRequest, fName, lName, s.status
+                          FROM new_hires AS n
+                          INNER JOIN status AS s ON n.statusId = s.statusId
+                          WHERE n.requestId = ?");
+
+  
+    $stmt->bind_param("s", $requestId);
+    $stmt->execute();
+    $stmt->bind_result($dateRequest, $fName, $lName, $status);
+    $stmt->fetch();
+    $stmt->close();
+    $conn->close();
+} else {
+    
+    echo 'Requested Number: Request ID not provided.';
+    exit(); 
+}
+?>
+
+
+
+                
                 <div id="taskDetails">
                   <form class="onboarding-form">
-                    <p><strong>Requested Number:</strong> <span id="taskNumber"></span></p>
-        <p><strong>Requested Date:</strong> <span id="taskDate"></span></p>
-        <p><strong>Name:</strong> <span id="taskName"></span></p>
-        <p><strong>Status:</strong> <span id="taskStatus"></span></p>
+                  <p><strong>Requested Number:</strong> <?php echo $requestId; ?></p>
+    <p><strong>Requested Date:</strong> <?php echo $dateRequest; ?></p>
+    <p><strong>Name:</strong> <?php echo $fName . ' ' . $lName; ?></p>
+    <p><strong>Status:</strong> <?php echo $status; ?></p>
+                    
+                    
         <div class="onboarding-element">
           <label for="role">Role:</label>
             <select id="role" name="role" class="select-box">
         
             <option value="">Select a Role</option>
-              <!-- Add other options for roles here -->
+              
             <option value="Administrator">Administrator</option>
             <option value="Dispatcher">Dispatcher</option>
             <option value="Supervisor">Supervisor</option>
@@ -90,12 +140,14 @@
          </form>
         
     </div>
+
+  
+
+
     <div class="right-button">
         <button id="cancelButton" class="">Cancel</button>
         <button id="submitButton" class="">Submit</button>
     </div>
-    <script>
-
-    </script>
+    
 </body>
 </html>

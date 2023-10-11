@@ -196,7 +196,11 @@ CREATE TABLE `new_hires` (
 --
 
 INSERT INTO `new_hires` (`requestId`, `statusId`, `dateRequest`, `fName`, `lName`, `description`, `timestamp`) VALUES
-(10001, 'ADM01', '2023-09-26', 'Aaron', 'Caparas', 'This will be a new hire with a role of Security Officer', '2023-09-25 23:28:44');
+(10001, 'ADM01', '2023-09-26', 'Aaron', 'Caparas', 'This will be a new hire with a role of Security Officer', '2023-09-25 23:28:44'),
+(10002, 'ADM01', '2023-09-28', 'Kayn', 'Darkin', 'This will be a new hire with a role of Security Officer', '2023-09-25 23:22:44'),
+(10003, 'ADM01', '2023-10-28', 'Gragas', 'Duke', 'This will be a new hire with a role of Security Officer', '2023-09-26 23:22:44'),
+(10004, 'ADM01', '2023-10-06', 'Evelyn', 'Slayer', 'This will be a new hire with a role of Security Officer', '2023-09-22 22:22:44'),
+(10005, 'ADM01', '2023-09-27', 'Valor', 'Quinn', 'This will be a new hire with a role of Security Officer', '2023-09-24 23:24:44');
 
 -- --------------------------------------------------------
 

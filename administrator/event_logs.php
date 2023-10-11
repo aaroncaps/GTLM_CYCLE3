@@ -25,7 +25,7 @@
                 <img src="../images/logo.png" alt="">
             </div>
             <ul>
-                <a href="tasks.html"><li>Tasks</li></a>
+                <a href="tasks.php"><li>Tasks</li></a>
                 <a href="event_logs.php"><li>Event Logs</li></a>
                 <a href="system_settings.html"><li>System Settings</li></a>
                 
@@ -37,19 +37,19 @@
                 <i class="fa-solid fa-bars" onclick="handleHamburger()"></i>
                 <i class="fa-solid fa-xmark" onclick="handleXmark()"></i>
                 <!-- hamburger menu ends -->
-                <a href="../profile/profile.html">Profile</a>
-                <a href="../profile/profile.html">Help & Support</a>
+                <a href="../profile/profile.php">Profile</a>
+                <a href="../profile/profile.php">Help & Support</a>
                 <a href="../login/logout.php">Logout</a>
             </div>
             <div class="main_content">
                 <div class="mobile_menu">
                     <ul>
-                        <a href="tasks.html"><li>Tasks</li></a>
-                        <a href="event_logs.html"><li>Event Logs</li></a>
+                        <a href="tasks.php"><li>Tasks</li></a>
+                        <a href="event_logs.php"><li>Event Logs</li></a>
                         <a href="system_settings.html">System Settings</a>
-                        <a href="../profile/profile.html"><li>Profile</li></a>
-                        <a href="../profile/profile.html">Help & Support</li></a>
-                        <a href="../login/login.php"><li>Logout</li></a>
+                        <a href="../profile/profile.php"><li>Profile</li></a>
+                        <a href="../profile/profile.php">Help & Support</li></a>
+                        <a href="../login/logout.php"><li>Logout</li></a>
                     </ul>
                 </div>
                 

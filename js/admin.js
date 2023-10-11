@@ -1,4 +1,4 @@
-
+/*
 const allTasks = [
   { number: "#123", date: "09-09-2023", name: "John", status: "Onboarding" },
   {
@@ -18,18 +18,18 @@ const allTasks = [
     number: "#213",
     date: "07-09-2023",
     name: "Paul",
-    status: "Assigned & In Progress",
+    status: "Onboarding",
   },
   {
     number: "#222",
     date: "08-09-2023",
     name: "Kevin",
-    status: "Assigned & In Progress",
+    status: "Completed",
   },
   { number: "#333", date: "09-09-2023", name: "Mark", status: "Completed" },
   { number: "#153", date: "08-09-2023", name: "Robert", status: "Completed" },
 ];
-
+*/
 const eventLogData = [
   {
     date: "12/09/2023",
@@ -77,227 +77,194 @@ const eventLogData = [
     user: "Freddy",
     role: "Supervisor",
   },
-  // Add more data here...
+
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
-  const currentPagePath = window.location.pathname;
-  const currentPageName = currentPagePath.split("/").pop();
-  if(currentPageName == 'tasks.html'){
-    let displayedTasks = [...allTasks];
-    function populateListView(filterStatus) {
-      const taskList = document.getElementById("taskList");
-      taskList.innerHTML = ""; // Clear existing data
-  
-      displayedTasks.forEach((task) => {
-        if (filterStatus === "all" || task.status === filterStatus) {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-                      <td><a href="ongoingtasks.html#${task.number}" class="task-link">${task.number}</a></td>
-                          <td>${task.date}</td>
-                          <td>${task.name}</td>
-                          <td>${task.status}</td>
-                      `;
-          taskList.appendChild(row);
-        }
-      });
-  
-      // Add click event listeners to task links
-      const taskLinks = document.querySelectorAll(".task-link");
-      taskLinks.forEach((link, index) => {
-        link.addEventListener("click", (event) => {
-          event.preventDefault();
-  const task = displayedTasks[index];
-      if (task.status === "Onboarding") {
-        // Redirect to task_details.html with task data as URL parameters
-        window.location.href = `task_details.html?number=${task.number}&date=${task.date}&name=${task.name}&status=${task.status}`;
-      }
-  
-         // openTaskDetails(index);
-        });
-      });
-    }
-  
-    // Function to populate the Kanban view
-    function populateKanbanView(filterStatus) {
-      const kanbanView = document.getElementById("kanbanView");
-      const statusColumns = kanbanView.querySelectorAll(".kanban-column");
-  
-      // Clear existing data
-      statusColumns.forEach((column) => {
-        column.innerHTML = `<h2>${column.getAttribute("data-status")}</h2>`;
-      });
-  
-      displayedTasks.forEach((task) => {
-        if (filterStatus === "all" || task.status === filterStatus) {
-          const card = document.createElement("div");
-          card.classList.add("task-card");
-          card.innerText = `${task.number}\n${task.date}\nName: ${task.name}`;
-  
-          // Append the task card to the appropriate status column
-          statusColumns.forEach((column) => {
-            if (column.getAttribute("data-status") === task.status) {
-              column.appendChild(card);
-            }
-          });
-        }
-      });
-  
-      // Add click event listeners to task cards
-      const taskCards = document.querySelectorAll(".task-card");
-      taskCards.forEach((card, index) => {
-        card.addEventListener("click", () => {
-          openTaskDetails(index);
-        });
-      });
-    }
-  
-  
-    // Hide the Kanban button initially
-  document.getElementById("kanbanViewButton").style.display = "none";
-  
-  // Function to handle the initial view
-  function setInitialView() {
-      const listViewButton = document.getElementById("listViewButton");
-      const kanbanViewButton = document.getElementById("kanbanViewButton");
+    const currentPagePath = window.location.pathname;
+    const currentPageName = currentPagePath.split("/").pop();
+    
+    if (currentPageName === 'tasks.php') {
+ 
+      function populateListView(filterStatusId) {
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = "";
       
-      listViewButton.classList.add("active");
-      kanbanViewButton.classList.remove("active");
-  
-      document.getElementById("listView").style.display = "block";
-      document.getElementById("kanbanView").style.display = "none";
-  
-      const statusFilter = document.getElementById("statusFilter").value;
-      populateListView(statusFilter);
-  
-      // Hide the Kanban button
-      kanbanViewButton.style.display = "inline-block";
-      listViewButton.style.display = "none";
-  }
-  
-  // Trigger the initial view setting
-  setInitialView();
-  
-  // Event listener for the "List" view button
-  const listViewButton = document.getElementById("listViewButton");
-  listViewButton.addEventListener("click", () => {
-      document.getElementById("listView").style.display = "block";
-      document.getElementById("kanbanView").style.display = "none";
-      listViewButton.classList.add("active");
-      kanbanViewButton.classList.remove("active");
-  
-      const statusFilter = document.getElementById("statusFilter").value;
-      populateListView(statusFilter);
-  
-      // Hide the Kanban button
-      kanbanViewButton.style.display = "inline-block";
-      listViewButton.style.display = "none";
-  });
-  
-  // Event listener for the "Kanban" view button
-  const kanbanViewButton = document.getElementById("kanbanViewButton");
-  kanbanViewButton.addEventListener("click", () => {
-      document.getElementById("listView").style.display = "none";
-      document.getElementById("kanbanView").style.display = "block";
-      kanbanViewButton.classList.add("active");
-      listViewButton.classList.remove("active");
-  
-      const statusFilter = document.getElementById("statusFilter").value;
-      populateKanbanView(statusFilter);
-  
-      // Hide the List button
-      listViewButton.style.display = "inline-block";
-      kanbanViewButton.style.display = "none";
-  });
-  
-  
-  // Initial population of the list view
-  populateListView("all");
-  
-  
-    // Event listener for status filter dropdown
-  document
-  .getElementById("statusFilter")
-  .addEventListener("change", (event) => {
-      const selectedStatus = event.target.value;
-      if (listViewButton.classList.contains("active")) {
-          populateListView(selectedStatus);
-      } else {
-          populateKanbanView(selectedStatus);
+        displayedTasks.forEach((task) => {
+          if (filterStatusId === "all" || task.statusId === filterStatusId) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td><a href="task_details.php#${task.number}" class="task-link">${task.number}</a></td>
+              <td>${task.date}</td>
+              <td>${task.name}</td>
+              <td>${task.status}</td>
+            `;
+            taskList.appendChild(row);
+          }
+        });
       }
-  });
-  
-  // Initial population of the list view
-  populateListView("all");
-  
-  ;
-  
-   // Event listener for task links
-  const taskLinks = document.querySelectorAll(".task-link");
-  taskLinks.forEach((link, index) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const task = displayedTasks[index];
-      if (task.status === "Onboarding") {
-        // Store task data in localStorage
-        localStorage.setItem("taskNumber", task.number);
-        localStorage.setItem("taskDate", task.date);
-        localStorage.setItem("taskName", task.name);
-        localStorage.setItem("taskStatus", task.status);
-  
-        // Redirect to task_details.html
-        window.location.href = "task_details.html";
+      
+      function populateKanbanView(filterStatusId) {
+        const kanbanColumns = document.querySelectorAll(".kanban-column");
+      
+        kanbanColumns.forEach((column) => {
+          const status = column.getAttribute("data-status");
+          const tasksForStatus = displayedTasks.filter((task) => filterStatusId === "all" || task.statusId === filterStatusId);
+          const columnContent = tasksForStatus.map((task) => `
+            <div class="task-card">
+              <p>Requested Number: ${task.number}</p>
+              <p>Requested Date: ${task.date}</p>
+              <p>Name: ${task.name}</p>
+            </div>
+          `).join('');
+      
+          if (filterStatusId === "all" || status === filterStatus) {
+            column.style.display = "block";
+            column.innerHTML = `<h2>${status}</h2>${columnContent}`;
+          } else {
+            column.style.display = "none";
+          }
+        });
       }
-    });
-  });
-  }else if(currentPageName == 'task_details.html'){
+      
+      
+      /*
+      function populateListView(filterStatus) {
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = ""; 
+        
+        displayedTasks.forEach((task) => {
+          if (filterStatus === "all" || task.status === filterStatus) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td><a href="task_details.php#${task.number}" class="task-link">${task.number}</a></td>
+              <td>${task.date}</td>
+              <td>${task.name}</td>
+              <td>${task.status}</td>
+            `;
+            taskList.appendChild(row);
+          }
+        });
+      }
+      
+    
+      function populateKanbanView(filterStatus) {
+        const kanbanColumns = document.querySelectorAll(".kanban-column");
+        kanbanColumns.forEach((column) => {
+          const status = column.getAttribute("data-status");
+          const tasksForStatus = displayedTasks.filter((task) => filterStatus === "all" || task.status === status);
+          const columnContent = tasksForStatus
+            .map(
+              (task) => `
+                <div class="task-card">
+                  <p>Requested Number: ${task.number}</p>
+                  <p>Requested Date: ${task.date}</p>
+                  <p>Name: ${task.name}</p>
+                </div>
+              `
+            )
+            .join("");
+          column.innerHTML = `<h2>${status}</h2>${columnContent}`;
+        });
+      }
+      */
+
+      function switchView(view) {
+        const listViewButton = document.getElementById("listViewButton");
+        const kanbanViewButton = document.getElementById("kanbanViewButton");
+  
+        if (view === "list") {
+          document.getElementById("listView").style.display = "block";
+          document.getElementById("kanbanView").style.display = "none";
+          listViewButton.classList.add("active");
+          kanbanViewButton.classList.remove("active");
+
+          const statusFilter = document.getElementById("statusFilter").value;
+          populateListView(statusFilter);
+        } else if (view === "kanban") {
+          document.getElementById("listView").style.display = "none";
+          document.getElementById("kanbanView").style.display = "block";
+          kanbanViewButton.classList.add("active");
+          listViewButton.classList.remove("active");
+  
+          const statusFilter = document.getElementById("statusFilter").value;
+          populateKanbanView(statusFilter);
+        }
+      }
+  
+      const listViewButton = document.getElementById("listViewButton");
+      listViewButton.addEventListener("click", () => {
+        switchView("list");
+      });
+  
+      const kanbanViewButton = document.getElementById("kanbanViewButton");
+      kanbanViewButton.addEventListener("click", () => {
+        switchView("kanban");
+      });
+  
+      // Initially, display the List view and hide the Kanban view
+      switchView("list");
+  
+      const statusFilter = document.getElementById("statusFilter");
+
+      statusFilter.addEventListener("change", (event) => {
+        const selectedStatusId = event.target.value;
+        const currentView = listViewButton.classList.contains("active") ? "list" : "kanban";
+        
+        if (currentView === "list") {
+          populateListView(selectedStatusId);
+        } else if (currentView === "kanban") {
+          populateKanbanView(selectedStatusId);
+        }
+      });
+      
+
+  }else if(currentPageName == 'task_details.php'){
     const taskNumber = localStorage.getItem("taskNumber");
   const taskDate = localStorage.getItem("taskDate");
   const taskName = localStorage.getItem("taskName");
   const taskStatus = localStorage.getItem("taskStatus");
 
-  // Check if task data exists
   if (taskNumber && taskDate && taskName && taskStatus) {
-      // Populate task details
       document.getElementById("taskNumber").textContent = taskNumber;
       document.getElementById("taskDate").textContent = taskDate;
       document.getElementById("taskName").textContent = taskName;
       document.getElementById("taskStatus").textContent = taskStatus;
   } else {
-      // Handle the case when task data is not found
+      
       alert("Task data not found.");
   }
 
 
-// Add event listeners for buttons (you can add functionality as needed)
+
 document.getElementById("cancelButton").addEventListener("click", () => {
-// Handle cancel button click
+
 window.history.back();
 });
 
 document.getElementById("submitButton").addEventListener("click", () => {
-// Handle submit button click
+
  const confirmationMessage = `Confirm Send to "${taskName}"`;
 
 alert(confirmationMessage);
 });
-  } else if(currentPageName == 'event_logs.html'){
+  } else if(currentPageName == 'event_logs.php'){
     
-  // Function to populate the table with event log data
+  
   function populateEventLogTable(data) {
     const eventLogTable = document.getElementById("eventLogData");
 
-    // Clear existing table rows
+    
     eventLogTable.innerHTML = "";
 
-    // Sort the data by date in ascending order
+    
     data.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
       return dateA - dateB;
     });
 
-    // Loop through the event log data and create table rows
+    
     data.forEach((event) => {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -311,12 +278,11 @@ alert(confirmationMessage);
     });
   }
 
-  // Function to filter and populate the table based on the date range
   function filterAndPopulateTable() {
     const dateFromInput = document.getElementById("dateFrom");
     const dateToInput = document.getElementById("dateTo");
 
-    // Get selected date range
+   
     const dateFromParts = dateFromInput.value.split("-");
     const dateToParts = dateToInput.value.split("-");
 
@@ -328,7 +294,7 @@ alert(confirmationMessage);
     );
     const dateTo = new Date(dateToParts[0], dateToParts[1] - 1, dateToParts[2]);
 
-    // Filter event logs based on the date range
+    
     const filteredData = eventLogData.filter((event) => {
       const eventParts = event.date.split("/");
       const eventDate = new Date(
@@ -339,30 +305,27 @@ alert(confirmationMessage);
       return eventDate >= dateFrom && eventDate <= dateTo;
     });
 
-    // Populate the table with filtered data
+    
     populateEventLogTable(filteredData);
   }
 
-  // Call the function to populate the table when the page loads
+  
   window.addEventListener("load", () => {
     populateEventLogTable(eventLogData);
   });
 
-  // Add an event listener to the "Search" button
+  
   document.getElementById("searchButton").addEventListener("click", function () {
-    // Get the selected date values from the input fields
+    
     const dateFrom = document.getElementById("dateFrom").value;
     const dateTo = document.getElementById("dateTo").value;
 
-    // Perform an AJAX request or a page reload with the selected date values
-    // You will pass these date values as URL parameters to your PHP script.
-    // Here, we're just reloading the page with the date values as URL parameters.
+   
 
-    // Redirect to the same page with dateFrom and dateTo as parameters
     window.location.href = 'event_logs.php?dateFrom=' + dateFrom + '&dateTo=' + dateTo;
 });
 
-  // Function to generate a CSV string from the table data
+  
   function generateCSV() {
     const rows = document.querySelectorAll(".event-log-table tbody tr");
     const headers = ["Date", "Time", "Action", "User", "Role"];
@@ -376,13 +339,11 @@ alert(confirmationMessage);
     return csvRows.join("\n");
   }
 
-  // ...
-
-  // Function to trigger the download of the CSV file with confirmation
+ 
   function downloadCSVWithConfirmation() {
     const csvData = generateCSV();
 
-    // Ask the user for confirmation
+    
     const confirmation = window.confirm("Do you want to download the file?");
 
     if (confirmation) {
@@ -396,32 +357,31 @@ alert(confirmationMessage);
       document.body.appendChild(a);
       a.click();
 
-      // Clean up
+    
       URL.revokeObjectURL(url);
       document.body.removeChild(a);
     }
   }
 
-  // Function to filter the event log data based on date and user name
-// Function to filter the event logs based on date and user name
+  
 function filterEventLogs() {
   const dateFrom = document.getElementById("dateFrom").value;
   const dateTo = document.getElementById("dateTo").value;
   const userName = document.getElementById("userName").value;
 
-  // Perform the filtering logic here
+  
   const filteredData = eventLogData.filter((event) => {
-    const eventDate = new Date(event.date); // Convert date string to Date object
+    const eventDate = new Date(event.date); 
     const isDateInRange = eventDate >= new Date(dateFrom) && eventDate <= new Date(dateTo);
 
     return isDateInRange && (userName === '' || event.user.toLowerCase().includes(userName.toLowerCase()));
   });
 
-  // Repopulate the table with the filtered data
+  
   populateEventLogTable(filteredData);
 }
 
-// Add an event listener to the "Search" button
+
 const searchButton = document.getElementById("searchButton");
 if (searchButton) {
   searchButton.addEventListener("click", filterEventLogs);
@@ -429,7 +389,7 @@ if (searchButton) {
 
 
 
-  // Add an event listener to the "Save" button with confirmation
+  
   const saveButton = document.getElementById("saveButton");
   saveButton.addEventListener("click", downloadCSVWithConfirmation);
   } else if(currentPageName == 'system_settings.html'){

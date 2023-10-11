@@ -27,13 +27,13 @@
                 <img src="../images/Logo.png" alt="" />
             </div>
             <ul>
-                <a href="tasks.html">
+                <a href="tasks.php">
                     <li>Tasks</li>
                 </a>
                 <a href="event_logs.php">
                     <li>Event Logs</li>
                 </a>
-                <a href="system_settings.php">
+                <a href="system_settings.html">
                     <li>System Settings</li>
                 </a>
             </ul>
@@ -44,42 +44,64 @@
                 <i class="fa-solid fa-bars" onclick="handleHamburger()"></i>
                 <i class="fa-solid fa-xmark" onclick="handleXmark()"></i>
                 <!-- hamburger menu ends -->
-                <a href="../profile/profile.html">Profile</a>
-                <a href="../help_support/help_support.html">Help & Support</a>
-                <a href="../login/login.html">Logout</a>
+                <a href="../profile/profile.php">Profile</a>
+                <a href="../help_support/help_support.php">Help & Support</a>
+                <a href="../login/logout.php">Logout</a>
             </div>
+            <div class="upper_navbar_user">
+                <?php
+                session_start();
+                $loginUserId = $_SESSION['loginUserId'];
+                $loginName = $_SESSION['loginName'];
+                echo 'Welcome, ' . $loginName;
+                if($loginUserId=='') {
+                  header("Location: ../login/login.php");
+                  exit();
+                }
+                ?>
+              </div>
+
             <div class="main_content">
                 <div class="mobile_menu">
                     <ul>
-                        <a href="tasks.html">
+                        <a href="tasks.php">
                             <li>Tasks</li>
                         </a>
-                        <a href="event_logs.html">
+                        <a href="event_logs.php">
                             <li>Event Logs</li>
                         </a>
                         <a href="system_settings.html">
                             <li>System Settings</li>
                         </a>
-                        <a href="../profile/profile.html">
+                        <a href="../profile/profile.php">
                             <li>Profile</li>
                         </a>
-                        <a href="../help_support/help_support.html">
+                        <a href="../help_support/help_support.php">
                             <li>Help & Support</li>
                         </a>
-                        <a href="../login/login.html">
+                        <a href="../login/logout.php">
                             <li>Logout</li>
                         </a>
                     </ul>
                 </div>
+        <?php
+            if (isset($_GET['messageError'])) {
+                $error_message = $_GET['messageError'];
+                echo '<div class="error-message">' . htmlspecialchars($error_message) . '</div>';
+            } else if (isset($_GET['message'])) {
+                $message = $_GET['message'];
+                echo '<div class="success-message">' . htmlspecialchars($message) . '</div>';
+            } 
+        ?> 
                 <div class="divtoggle">
                     <h2>Tasks</h2>
                    <div class="filterstatus">
                     <label for="statusFilter">Filter by Status:</label> 
                     <select id="statusFilter" class="select-box">
                         <option value="all">All</option>
-                        <option value="Onboarding">Onboarding</option>
-                        <option value="Assigned & In Progress">Assigned & In Progress</option>
-                        <option value="Completed">Completed</option>
+                        <option value="ADM01">Onboarding</option>
+                        
+                        <option value="ADM02">Completed</option>
                     </select>
                    </div> 
                    <div>
@@ -88,6 +110,30 @@
                     </div>    
             
                 </div>
+                
+                <?php
+    
+                require_once "../inc/dbconn.inc.php";
+               
+$sql = "SELECT n.requestId, n.dateRequest, n.fName, n.lName, s.status
+FROM new_hires AS n
+INNER JOIN status AS s ON n.statusId = s.statusId
+WHERE s.statusId IN ('ADM01', 'ADM02')
+AND (s.status = 'Onboarding' OR s.status = 'Completed')";
+
+$result = $conn->query($sql);
+
+$data = array();
+
+if ($result->num_rows > 0) {
+while ($row = $result->fetch_assoc()) {
+$data[] = $row;
+}
+}
+
+$conn->close();
+?>
+
 
                 <div id="listView" class="">
                     <table>
@@ -100,32 +146,50 @@
                             </tr>
                         </thead>
                         <tbody id="taskList" class="">
-                           
-                            <td>
-                                <a href="task_details.html" class="task-link"></a>                    
-                            </td>
+                          
+                            <tbody id="taskList">
+                            <?php
+foreach ($data as $row) {
+    echo '<tr>';
+    echo '<td><a href="task_details.php?requestId=' . $row['requestId'] . '">';
+    echo $row['requestId'] . '</a></td>';
+    echo '<td>' . $row['dateRequest'] . '</td>';
+    echo '<td>' . $row['fName'] . ' ' . $row['lName'] . '</td>';
+    echo '<td>' . $row['status'] . '</td>';
+    echo '</tr>';
+}
+?>
 
+</tbody>
 
-
-                        </tbody>
                     </table>
                 </div>
                 <div id="kanbanView" class="adminKanban">
                     <div class="kanban-columns">
                         <div class="kanban-column" data-status="Onboarding">
                             <span id="kanbanH2">
-                                <h2 id="kanbanHeading">Ongoing</h2>
+                                <h2 id="kanbanHeading">Onboarding</h2>
                             </span>
+                            <?php
+foreach ($data as $row) {
+    echo '<tr>';
+    echo '<td><a href="task_details.php?requestId=' . $row['requestId'] . '">';
+    echo $row['requestId'] . '</a></td>';
+    echo '<td>' . $row['dateRequest'] . '</td>';
+    echo '<td>' . $row['fName'] . ' ' . $row['lName'] . '</td>';
+    echo '<td>' . $row['status'] . '</td>';
+    echo '</tr>';
+}
+?>
+
+
                             
-                            <!-- Task cards for "Onboarding" status -->
+                          
                         </div>
-                        <div class="kanban-column" data-status="Assigned & In Progress">
-                            <h2>Assigned & In Progress</h2>
-                            <!-- Task cards for "Assigned & In Progress" status -->
-                        </div>
+                       
                         <div class="kanban-column" data-status="Completed">
                             <h2>Completed</h2>
-                            <!-- Task cards for "Completed" status -->
+                            
                         </div>
                     </div>
                 </div>
@@ -134,3 +198,4 @@
     </div>        
 </body>
 </html>
+
